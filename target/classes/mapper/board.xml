@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.controller.service.dao.BoardDAO">
+
+	<select id="idOverlap" resultType="String">
+		select id from newlogin where id=#{id}
+	</select>
+	
+	<insert id="signUp">
+		insert into newlogin values (#{id}, #{pw}, #{name}, #{tel}, #{address})
+	</insert>
+	
+	<select id="login" resultType="loginVO">
+		select * from newlogin where id=#{id}
+	</select>
+	
+	<select id="getListCount" resultType="int">
+		select count(*) from newboard
+	</select>
+	
+	<select id="boardList" resultType="boardVO">
+		select * from 
+		(select rownum rn, no, title, content, id, to_char(writeDate, 'RR/MM/DD HH24:MI') writeDate, count 
+		from (select * from newboard order by no desc)) where rn between #{startRow} and #{endRow}
+	</select>
+	
+	<insert id="insertBoard">
+		insert into newboard(no, title, content, id) values (board_no.nextval, #{title}, #{content}, #{id})
+	</insert>
+	
+	<select id="selectContent" resultType="boardVO">
+		select no, title, id, to_char(writeDate, 'RR/MM/DD HH24:MI') writeDate, count, content from newboard where no=#{no}
+	</select>
+	
+	<update id="updateBoard">
+		update newboard set title=#{title}, content=#{content} where no=#{no}
+	</update>
+	
+	<delete id="deleteBoard">
+		delete from newboard where no=#{no}
+	</delete>
+	
+	<update id="addCount">
+		update newboard set count=count+1 where no=#{no}
+	</update>
+	
+	<select id="boardMyList" resultType="boardVO">
+		select * from 
+		(select rownum rn, no, title, content, id, to_char(writeDate, 'RR/MM/DD HH24:MI') writeDate, count 
+		from (select * from newboard where id=#{id} order by no desc)) where rn between #{startRow} and #{endRow}
+	</select>
+	
+	<select id="getMyListCount" resultType="int">
+		select count(*) from newboard where id=#{id}
+	</select>
+	
+	<update id="updateLogin">
+		update newlogin set pw=#{pw}, name=#{name}, tel=#{tel}, address=#{address} where id=#{id}
+	</update>
+
+</mapper>
